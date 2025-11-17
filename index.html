@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revenue Dashboard 2025 - Service Details</title>
+    <title>Revenue Dashboard 2025</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
             min-height: 100vh;
         }
-        
         .dashboard-container {
             max-width: 1600px;
             margin: 0 auto;
         }
-        
         .dashboard-header {
             background: white;
             padding: 25px 35px;
@@ -33,7 +30,6 @@
             justify-content: space-between;
             align-items: center;
         }
-        
         .header-title h1 {
             font-size: 2.2em;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -41,12 +37,10 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
-        
         .header-subtitle {
             color: #666;
             font-size: 1em;
         }
-        
         .last-updated {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -54,7 +48,39 @@
             border-radius: 25px;
             font-weight: bold;
         }
-        
+        .legend-container {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+        .legend-target {
+            background: linear-gradient(135deg, #B0BEC5, #78909C);
+        }
+        .legend-actual {
+            background: linear-gradient(135deg, #66BB6A, #43A047);
+        }
+        .legend-projected {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+        }
         .section-title {
             color: white;
             font-size: 1.8em;
@@ -63,15 +89,21 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-        
+        .section-icon {
+            font-size: 1.3em;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
         .service-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 18px;
             margin-bottom: 25px;
         }
-        
         .service-card {
             background: white;
             border-radius: 12px;
@@ -79,111 +111,165 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             border-left: 5px solid #667eea;
+            position: relative;
         }
-        
         .service-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        
         .service-card.exceeds {
-            border-left-color: #4CAF50;
+            border-left-color: #43A047;
         }
-        
         .service-card.ontrack {
-            border-left-color: #FFC107;
+            border-left-color: #FB8C00;
         }
-        
         .service-card.below {
-            border-left-color: #f44336;
+            border-left-color: #E53935;
+            background: linear-gradient(135deg, #ffebee, #ffffff);
         }
-        
+        .service-card.critical {
+            border-left-color: #B71C1C;
+            border-left-width: 6px;
+            background: linear-gradient(135deg, #ffcdd2, #ffffff);
+            box-shadow: 0 6px 25px rgba(183, 28, 28, 0.3);
+        }
+        .service-rank {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
         .service-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            padding-right: 45px;
         }
-        
         .service-name {
             font-size: 1.1em;
             font-weight: bold;
             color: #333;
         }
-        
+        .service-name.critical-name {
+            color: #B71C1C;
+            font-size: 1.15em;
+        }
         .service-badge {
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 0.75em;
             font-weight: bold;
         }
-        
         .badge-exceeds {
-            background: #4CAF50;
+            background: #43A047;
             color: white;
         }
-        
         .badge-ontrack {
-            background: #FFC107;
-            color: #333;
-        }
-        
-        .badge-below {
-            background: #f44336;
+            background: #FB8C00;
             color: white;
         }
-        
+        .badge-below {
+            background: #E53935;
+            color: white;
+        }
+        .badge-critical {
+            background: #B71C1C;
+            color: white;
+            font-size: 0.8em;
+            padding: 5px 12px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
         .service-metrics {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 12px;
         }
-        
         .metric {
-            background: #f8f9fa;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
+            border: 2px solid transparent;
         }
-        
+        .metric-target {
+            background: linear-gradient(135deg, #ECEFF1, #CFD8DC);
+            border-color: #78909C;
+        }
+        .metric-actual {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-color: #66BB6A;
+        }
+        .metric-expected {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-color: #FB8C00;
+        }
+        .metric-projected {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border-color: #42A5F5;
+        }
+        .metric-projected.critical-projected {
+            background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
+            border-color: #B71C1C;
+            border-width: 3px;
+        }
         .metric-label {
-            font-size: 0.75em;
-            color: #666;
-            margin-bottom: 3px;
-        }
-        
-        .metric-value {
-            font-size: 1.2em;
+            font-size: 0.7em;
             font-weight: bold;
-            color: #333;
+            color: #555;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
+        .metric-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        .metric-value.critical-value {
+            color: #B71C1C;
+            font-size: 1.4em;
+        }
         .metric-percent {
             font-size: 0.85em;
             font-weight: bold;
             margin-left: 5px;
         }
-        
         .percent-green {
-            color: #4CAF50;
+            color: #2E7D32;
         }
-        
         .percent-orange {
-            color: #FF9800;
+            color: #E65100;
         }
-        
         .percent-red {
-            color: #f44336;
+            color: #C62828;
         }
-        
+        .percent-critical {
+            color: #B71C1C;
+            font-size: 0.95em;
+            font-weight: 900;
+        }
         .progress-bar {
-            height: 30px;
-            background: #e9ecef;
-            border-radius: 15px;
+            height: 35px;
+            background: #ECEFF1;
+            border-radius: 18px;
             overflow: hidden;
             position: relative;
+            border: 2px solid #B0BEC5;
         }
-        
         .progress-fill {
             height: 100%;
             transition: width 0.8s ease;
@@ -191,22 +277,22 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.85em;
+            font-size: 0.9em;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
-        
         .progress-exceeds {
-            background: linear-gradient(90deg, #4CAF50, #66BB6A);
+            background: linear-gradient(90deg, #66BB6A, #43A047);
         }
-        
         .progress-ontrack {
-            background: linear-gradient(90deg, #FFC107, #FFD54F);
+            background: linear-gradient(90deg, #FFA726, #FB8C00);
         }
-        
         .progress-below {
-            background: linear-gradient(90deg, #f44336, #E57373);
+            background: linear-gradient(90deg, #EF5350, #E53935);
         }
-        
+        .progress-critical {
+            background: linear-gradient(90deg, #E53935, #B71C1C);
+        }
         .overall-card {
             background: white;
             border-radius: 15px;
@@ -215,14 +301,12 @@
             margin-bottom: 25px;
             border: 3px solid #667eea;
         }
-        
         .overall-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
-        
         .overall-title {
             font-size: 1.8em;
             font-weight: bold;
@@ -231,40 +315,56 @@
             align-items: center;
             gap: 12px;
         }
-        
         .overall-metrics {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 20px;
         }
-        
         .overall-metric {
             text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
+            border: 3px solid transparent;
         }
-        
+        .overall-metric.target-metric {
+            background: linear-gradient(135deg, #ECEFF1, #CFD8DC);
+            border-color: #78909C;
+        }
+        .overall-metric.actual-metric {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-color: #66BB6A;
+        }
+        .overall-metric.expected-metric {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-color: #FB8C00;
+        }
+        .overall-metric.projected-metric {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border-color: #42A5F5;
+        }
         .overall-metric-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .overall-metric-value {
-            font-size: 2em;
+            font-size: 0.85em;
             font-weight: bold;
-            color: #333;
+            color: #555;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
         }
-        
+        .overall-metric-icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        .overall-metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
         .overall-metric-percent {
             font-size: 1.2em;
             font-weight: bold;
             margin-left: 8px;
-            color: #4CAF50;
         }
-        
         .chart-container {
             background: white;
             border-radius: 15px;
@@ -272,12 +372,46 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-bottom: 25px;
         }
-        
         .chart-title {
             font-size: 1.6em;
             font-weight: bold;
             color: #333;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chart-subtitle {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+        .warning-banner {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            border-left: 5px solid #B71C1C;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(183, 28, 28, 0.2);
+        }
+        .warning-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #B71C1C;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .warning-content {
+            color: #C62828;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+        .warning-item {
+            margin: 5px 0;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -289,403 +423,446 @@
                 <div class="header-title">
                     <h1>📊 Revenue Dashboard 2025</h1>
                 </div>
-                <p class="header-subtitle">Detailed Service Performance Tracking</p>
+                <p class="header-subtitle">Service Performance Tracking & Analytics</p>
             </div>
             <div class="last-updated">Last Updated: Nov 17, 2025</div>
         </div>
 
+        <!-- Legend -->
+        <div class="legend-container">
+            <div class="legend-item">
+                <div class="legend-box legend-target"></div>
+                <span>🎯 Target</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-actual"></div>
+                <span>💰 Actual YTD</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-projected"></div>
+                <span>📈 Projected Year-End</span>
+            </div>
+        </div>
+
+        <!-- Warning Banner -->
+        <div class="warning-banner">
+            <div class="warning-title">
+                ⚠️ Services Below Target Alert
+            </div>
+            <div class="warning-content">
+                <div class="warning-item">• <strong>Audit Fee</strong>: Projected at only 27% of target (฿4.12M / ฿15.00M)</div>
+                <div class="warning-item">• <strong>Banner</strong>: Projected at only 34% of target (฿1.19M / ฿3.50M)</div>
+            </div>
+        </div>
+
         <!-- Market Access Section -->
         <div class="section-title">
-            🔌 Market Access Services
+            <span class="section-icon">🌐</span>
+            Market Access Services (Network Connectivity & Data Center)
         </div>
         <div class="service-grid">
-            <!-- SETNET3 -->
-            <div class="service-card ontrack">
-                <div class="service-header">
-                    <div class="service-name">SETNET3</div>
-                    <span class="service-badge badge-ontrack">99%</span>
-                </div>
-                <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
-                        <div class="metric-value">฿31.43M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
-                        <div class="metric-value">฿25.87M<span class="metric-percent percent-orange">82%</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
-                        <div class="metric-value">฿5.32M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
-                        <div class="metric-value">฿31.19M<span class="metric-percent percent-green">99%</span></div>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill progress-ontrack" style="width: 82.3%;">82.3%</div>
-                </div>
-            </div>
-
-            <!-- Equity API -->
+            <!-- 1. Equity API -->
             <div class="service-card exceeds">
+                <div class="service-rank">1</div>
                 <div class="service-header">
                     <div class="service-name">Equity API</div>
                     <span class="service-badge badge-exceeds">102%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿209.96M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿178.14M<span class="metric-percent percent-orange">85%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿35.09M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿213.23M<span class="metric-percent percent-green">102%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 84.8%;">84.8%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 84.8%">💰 84.8%</div>
                 </div>
             </div>
 
-            <!-- Derivatives API -->
+            <!-- 2. Co-location -->
             <div class="service-card exceeds">
-                <div class="service-header">
-                    <div class="service-name">Derivatives API (TFEX)</div>
-                    <span class="service-badge badge-exceeds">120%</span>
-                </div>
-                <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
-                        <div class="metric-value">฿19.20M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
-                        <div class="metric-value">฿18.86M<span class="metric-percent percent-green">98%</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
-                        <div class="metric-value">฿4.25M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
-                        <div class="metric-value">฿23.11M<span class="metric-percent percent-green">120%</span></div>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 98.2%;">98.2%</div>
-                </div>
-            </div>
-
-            <!-- Co-location -->
-            <div class="service-card exceeds">
+                <div class="service-rank">2</div>
                 <div class="service-header">
                     <div class="service-name">Co-location (Combined)</div>
                     <span class="service-badge badge-exceeds">119%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿96.94M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿96.53M<span class="metric-percent percent-green">100%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿18.42M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿114.95M<span class="metric-percent percent-green">119%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 99.6%;">99.6%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 99.6%">💰 99.6%</div>
+                </div>
+            </div>
+
+            <!-- 3. SETNET3 -->
+            <div class="service-card ontrack">
+                <div class="service-rank">3</div>
+                <div class="service-header">
+                    <div class="service-name">SETNET3</div>
+                    <span class="service-badge badge-ontrack">99%</span>
+                </div>
+                <div class="service-metrics">
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
+                        <div class="metric-value">฿31.43M</div>
+                    </div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
+                        <div class="metric-value">฿25.87M<span class="metric-percent percent-orange">82%</span></div>
+                    </div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
+                        <div class="metric-value">฿5.32M</div>
+                    </div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
+                        <div class="metric-value">฿31.19M<span class="metric-percent percent-orange">99%</span></div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-ontrack" style="width: 82.3%">💰 82.3%</div>
+                </div>
+            </div>
+
+            <!-- 4. Derivatives API -->
+            <div class="service-card exceeds">
+                <div class="service-rank">4</div>
+                <div class="service-header">
+                    <div class="service-name">Derivatives API (TFEX)</div>
+                    <span class="service-badge badge-exceeds">120%</span>
+                </div>
+                <div class="service-metrics">
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
+                        <div class="metric-value">฿19.20M</div>
+                    </div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
+                        <div class="metric-value">฿18.86M<span class="metric-percent percent-green">98%</span></div>
+                    </div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
+                        <div class="metric-value">฿4.25M</div>
+                    </div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
+                        <div class="metric-value">฿23.11M<span class="metric-percent percent-green">120%</span></div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-exceeds" style="width: 98.2%">💰 98.2%</div>
                 </div>
             </div>
         </div>
 
         <!-- Information Service Section -->
         <div class="section-title">
-            📡 Information Service Products
+            <span class="section-icon">📊</span>
+            Information Service (Market Data Services)
         </div>
         <div class="service-grid">
-            <!-- Price Feed (Real-time) -->
+            <!-- 1. Price Feed (Real-time) -->
             <div class="service-card exceeds">
+                <div class="service-rank">1</div>
                 <div class="service-header">
                     <div class="service-name">Price Feed (Real-time)</div>
                     <span class="service-badge badge-exceeds">106%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿154.00M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿136.07M<span class="metric-percent percent-orange">88%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿26.30M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿162.37M<span class="metric-percent percent-green">106%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 88.4%;">88.4%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 88.4%">💰 88.4%</div>
                 </div>
             </div>
 
-            <!-- Price Feed (Delay) -->
+            <!-- 2. Non Display -->
             <div class="service-card exceeds">
-                <div class="service-header">
-                    <div class="service-name">Price Feed (Delay)</div>
-                    <span class="service-badge badge-exceeds">103%</span>
-                </div>
-                <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
-                        <div class="metric-value">฿9.60M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
-                        <div class="metric-value">฿8.31M<span class="metric-percent percent-orange">87%</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
-                        <div class="metric-value">฿1.58M</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
-                        <div class="metric-value">฿9.89M<span class="metric-percent percent-green">103%</span></div>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 86.6%;">86.6%</div>
-                </div>
-            </div>
-
-            <!-- Non Display -->
-            <div class="service-card exceeds">
+                <div class="service-rank">2</div>
                 <div class="service-header">
                     <div class="service-name">Non Display</div>
                     <span class="service-badge badge-exceeds">105%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿86.35M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿75.58M<span class="metric-percent percent-orange">88%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿15.13M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿90.71M<span class="metric-percent percent-green">105%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 87.5%;">87.5%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 87.5%">💰 87.5%</div>
                 </div>
             </div>
 
-            <!-- Display (End-User) -->
+            <!-- 3. Display (End-User) -->
             <div class="service-card exceeds">
+                <div class="service-rank">3</div>
                 <div class="service-header">
                     <div class="service-name">Display (End-User)</div>
                     <span class="service-badge badge-exceeds">107%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿78.00M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿69.34M<span class="metric-percent percent-orange">89%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿13.86M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿83.20M<span class="metric-percent percent-green">107%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 88.9%;">88.9%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 88.9%">💰 88.9%</div>
                 </div>
             </div>
 
-            <!-- Index -->
+            <!-- 4. Index -->
             <div class="service-card exceeds">
+                <div class="service-rank">4</div>
                 <div class="service-header">
                     <div class="service-name">Index</div>
                     <span class="service-badge badge-exceeds">122%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿34.35M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿34.76M<span class="metric-percent percent-green">101%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿7.26M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿42.02M<span class="metric-percent percent-green">122%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-exceeds" style="width: 100%;">101.2%</div>
+                    <div class="progress-fill progress-exceeds" style="width: 100%">💰 101.2%</div>
                 </div>
             </div>
 
-            <!-- SETSMART -->
+            <!-- 5. SETSMART -->
             <div class="service-card ontrack">
+                <div class="service-rank">5</div>
                 <div class="service-header">
                     <div class="service-name">SETSMART</div>
                     <span class="service-badge badge-ontrack">95%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿21.00M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿16.68M<span class="metric-percent percent-orange">79%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿3.26M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿19.94M<span class="metric-percent percent-orange">95%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-ontrack" style="width: 79.4%;">79.4%</div>
+                    <div class="progress-fill progress-ontrack" style="width: 79.4%">💰 79.4%</div>
                 </div>
             </div>
 
-            <!-- Data File -->
+            <!-- 6. Data File -->
             <div class="service-card ontrack">
+                <div class="service-rank">6</div>
                 <div class="service-header">
                     <div class="service-name">Data File</div>
                     <span class="service-badge badge-ontrack">99%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿18.00M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
                         <div class="metric-value">฿15.13M<span class="metric-percent percent-orange">84%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿2.61M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
                         <div class="metric-value">฿17.74M<span class="metric-percent percent-orange">99%</span></div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill progress-ontrack" style="width: 84.1%;">84.1%</div>
+                    <div class="progress-fill progress-ontrack" style="width: 84.1%">💰 84.1%</div>
                 </div>
             </div>
 
-            <!-- Audit Fee -->
-            <div class="service-card below">
+            <!-- 7. Price Feed (Delay) -->
+            <div class="service-card exceeds">
+                <div class="service-rank">7</div>
                 <div class="service-header">
-                    <div class="service-name">Audit Fee</div>
-                    <span class="service-badge badge-below">26%</span>
+                    <div class="service-name">Price Feed (Delay)</div>
+                    <span class="service-badge badge-exceeds">103%</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
+                        <div class="metric-value">฿9.60M</div>
+                    </div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
+                        <div class="metric-value">฿8.31M<span class="metric-percent percent-orange">87%</span></div>
+                    </div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
+                        <div class="metric-value">฿1.58M</div>
+                    </div>
+                    <div class="metric metric-projected">
+                        <div class="metric-label">📈 Projected</div>
+                        <div class="metric-value">฿9.89M<span class="metric-percent percent-green">103%</span></div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-exceeds" style="width: 86.6%">💰 86.6%</div>
+                </div>
+            </div>
+
+            <!-- 8. Audit Fee - CRITICAL -->
+            <div class="service-card critical">
+                <div class="service-rank" style="background: linear-gradient(135deg, #B71C1C, #D32F2F);">8</div>
+                <div class="service-header">
+                    <div class="service-name critical-name">⚠️ Audit Fee</div>
+                    <span class="service-badge badge-critical">27% ⚠️</span>
+                </div>
+                <div class="service-metrics">
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿15.00M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
-                        <div class="metric-value">฿3.87M<span class="metric-percent percent-red">26%</span></div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
+                        <div class="metric-value critical-value">฿3.87M<span class="metric-percent percent-critical">26%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿0.25M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
-                        <div class="metric-value">฿4.12M<span class="metric-percent percent-red">27%</span></div>
+                    <div class="metric metric-projected critical-projected">
+                        <div class="metric-label">📈 Projected</div>
+                        <div class="metric-value critical-value">฿4.12M<span class="metric-percent percent-critical">27%</span></div>
                     </div>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill progress-below" style="width: 25.8%;">25.8%</div>
+                <div class="progress-bar" style="border-color: #B71C1C;">
+                    <div class="progress-fill progress-critical" style="width: 25.8%">💰 25.8%</div>
                 </div>
             </div>
 
-            <!-- Banner -->
-            <div class="service-card below">
+            <!-- 9. Banner - CRITICAL -->
+            <div class="service-card critical">
+                <div class="service-rank" style="background: linear-gradient(135deg, #B71C1C, #D32F2F);">9</div>
                 <div class="service-header">
-                    <div class="service-name">Banner</div>
-                    <span class="service-badge badge-below">34%</span>
+                    <div class="service-name critical-name">⚠️ Banner</div>
+                    <span class="service-badge badge-critical">34% ⚠️</span>
                 </div>
                 <div class="service-metrics">
-                    <div class="metric">
-                        <div class="metric-label">TARGET</div>
+                    <div class="metric metric-target">
+                        <div class="metric-label">🎯 Target</div>
                         <div class="metric-value">฿3.50M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">ACTUAL</div>
-                        <div class="metric-value">฿0.81M<span class="metric-percent percent-red">23%</span></div>
+                    <div class="metric metric-actual">
+                        <div class="metric-label">💰 Actual</div>
+                        <div class="metric-value critical-value">฿0.81M<span class="metric-percent percent-critical">23%</span></div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">EXPECTED</div>
+                    <div class="metric metric-expected">
+                        <div class="metric-label">⏳ Expected</div>
                         <div class="metric-value">฿0.38M</div>
                     </div>
-                    <div class="metric">
-                        <div class="metric-label">PROJECTED</div>
-                        <div class="metric-value">฿1.19M<span class="metric-percent percent-red">34%</span></div>
+                    <div class="metric metric-projected critical-projected">
+                        <div class="metric-label">📈 Projected</div>
+                        <div class="metric-value critical-value">฿1.19M<span class="metric-percent percent-critical">34%</span></div>
                     </div>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill progress-below" style="width: 23.1%;">23.1%</div>
+                <div class="progress-bar" style="border-color: #B71C1C;">
+                    <div class="progress-fill progress-critical" style="width: 23.1%">💰 23.1%</div>
                 </div>
             </div>
         </div>
 
         <!-- Overall Summary -->
         <div class="section-title">
-            🏢 Overall Summary
+            <span class="section-icon">🏢</span>
+            Overall Summary
         </div>
         <div class="overall-card">
             <div class="overall-header">
@@ -696,45 +873,78 @@
                 <span class="service-badge badge-exceeds" style="font-size: 1.1em; padding: 8px 18px;">EXCEEDS TARGET - 105%</span>
             </div>
             <div class="overall-metrics">
-                <div class="overall-metric">
-                    <div class="overall-metric-label">ANNUAL TARGET</div>
+                <div class="overall-metric target-metric">
+                    <div class="overall-metric-icon">🎯</div>
+                    <div class="overall-metric-label">Annual Target</div>
                     <div class="overall-metric-value">฿777.33M</div>
                 </div>
-                <div class="overall-metric">
-                    <div class="overall-metric-label">ACTUAL YTD</div>
-                    <div class="overall-metric-value">฿680.03M<span class="overall-metric-percent">87.5%</span></div>
+                <div class="overall-metric actual-metric">
+                    <div class="overall-metric-icon">💰</div>
+                    <div class="overall-metric-label">Actual YTD</div>
+                    <div class="overall-metric-value">฿680.03M<span class="overall-metric-percent" style="color: #2E7D32;">87.5%</span></div>
                 </div>
-                <div class="overall-metric">
-                    <div class="overall-metric-label">EXPECTED REMAINING</div>
+                <div class="overall-metric expected-metric">
+                    <div class="overall-metric-icon">⏳</div>
+                    <div class="overall-metric-label">Expected Remaining</div>
                     <div class="overall-metric-value">฿133.63M</div>
                 </div>
-                <div class="overall-metric">
-                    <div class="overall-metric-label">PROJECTED TOTAL</div>
-                    <div class="overall-metric-value">฿813.66M<span class="overall-metric-percent">104.7%</span></div>
+                <div class="overall-metric projected-metric">
+                    <div class="overall-metric-icon">📈</div>
+                    <div class="overall-metric-label">Projected Year-End</div>
+                    <div class="overall-metric-value">฿813.66M<span class="overall-metric-percent" style="color: #1565C0;">104.7%</span></div>
                 </div>
             </div>
-            <div class="progress-bar" style="height: 50px;"><div class="progress-fill progress-exceeds" style="width: 87.5%; font-size: 1.1em;">Actual: ฿680.03M (87.5%)</div></div>
+            <div class="progress-bar" style="height: 50px; border: 3px solid #66BB6A;">
+                <div class="progress-fill progress-exceeds" style="width: 87.5%; font-size: 1.2em;">
+                    💰 Actual: ฿680.03M (87.5%)
+                </div>
+            </div>
         </div>
 
         <!-- Charts Section -->
         <div class="chart-container">
-            <h2 class="chart-title">📊 Revenue Performance Comparison by Department</h2>
+            <h2 class="chart-title">
+                📊 Revenue Performance by Department
+                <div class="chart-subtitle">Sorted by Actual Revenue (Highest to Lowest)</div>
+            </h2>
             <canvas id="departmentChart" style="max-height: 400px;"></canvas>
         </div>
 
         <div class="chart-container">
-            <h2 class="chart-title">📈 Market Access Services Performance</h2>
+            <h2 class="chart-title">
+                🌐 Market Access Services
+                <div class="chart-subtitle">Network Connectivity & Data Center Services</div>
+            </h2>
             <canvas id="maChart" style="max-height: 350px;"></canvas>
         </div>
 
         <div class="chart-container">
-            <h2 class="chart-title">📡 Information Service Products Performance</h2>
-            <canvas id="infoChart" style="max-height: 450px;"></canvas>
+            <h2 class="chart-title">
+                📊 Information Service Products
+                <div class="chart-subtitle">Market Data Services (Sorted by Actual Revenue)</div>
+            </h2>
+            <canvas id="infoChart" style="max-height: 500px;"></canvas>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Color scheme
+        const colors = {
+            target: {
+                bg: 'rgba(144, 164, 174, 0.7)',
+                border: 'rgba(96, 125, 139, 1)'
+            },
+            actual: {
+                bg: 'rgba(102, 187, 106, 0.8)',
+                border: 'rgba(67, 160, 71, 1)'
+            },
+            projected: {
+                bg: 'rgba(66, 165, 245, 0.8)',
+                border: 'rgba(30, 136, 229, 1)'
+            }
+        };
+
         // Common chart options
         const commonOptions = {
             responsive: true,
@@ -744,15 +954,18 @@
                     display: true,
                     position: 'top',
                     labels: {
-                        font: { size: 13, weight: 'bold' },
-                        padding: 15
+                        font: { size: 14, weight: 'bold' },
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'rectRounded'
                     }
                 },
-                datalabels: {
-                    display: true,
-                    color: '#333',
-                    font: { size: 11, weight: 'bold' },
-                    formatter: (value) => '฿' + value.toFixed(1) + 'M'
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    padding: 12,
+                    cornerRadius: 8
                 }
             },
             scales: {
@@ -761,17 +974,44 @@
                     title: {
                         display: true,
                         text: 'Revenue (฿ Million)',
-                        font: { size: 14, weight: 'bold' }
+                        font: { size: 15, weight: 'bold' }
                     },
                     ticks: {
-                        callback: (value) => '฿' + value + 'M'
+                        callback: (value) => '฿' + value + 'M',
+                        font: { size: 12 }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
                     }
                 },
                 x: {
                     ticks: {
-                        font: { size: 11 }
+                        font: { size: 12 }
+                    },
+                    grid: {
+                        display: false
                     }
                 }
+            }
+        };
+
+        // Plugin to display values on bars
+        const valuePlugin = {
+            afterDatasetsDraw: (chart) => {
+                const ctx = chart.ctx;
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    meta.data.forEach((bar, index) => {
+                        const data = dataset.data[index];
+                        if (data > 0) {
+                            ctx.fillStyle = '#1a1a1a';
+                            ctx.font = 'bold 11px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText('฿' + data.toFixed(1) + 'M', bar.x, bar.y - 5);
+                        }
+                    });
+                });
             }
         };
 
@@ -783,61 +1023,30 @@
                 labels: ['Overall', 'Market Access', 'Information Service'],
                 datasets: [
                     {
-                        label: 'Target',
+                        label: '🎯 Target',
                         data: [777.33, 357.53, 419.80],
-                        backgroundColor: 'rgba(200, 200, 200, 0.7)',
-                        borderColor: 'rgba(150, 150, 150, 1)',
+                        backgroundColor: colors.target.bg,
+                        borderColor: colors.target.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Actual YTD',
+                        label: '💰 Actual YTD',
                         data: [680.03, 319.48, 360.55],
-                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
-                        borderColor: 'rgba(56, 142, 60, 1)',
+                        backgroundColor: colors.actual.bg,
+                        borderColor: colors.actual.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Projected Total',
+                        label: '📈 Projected',
                         data: [813.66, 382.48, 431.18],
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: 'rgba(63, 81, 181, 1)',
+                        backgroundColor: colors.projected.bg,
+                        borderColor: colors.projected.border,
                         borderWidth: 2
                     }
                 ]
             },
-            options: {
-                ...commonOptions,
-                plugins: {
-                    ...commonOptions.plugins,
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const label = context.dataset.label;
-                                const value = context.parsed.y;
-                                const target = [777.33, 357.53, 419.80][context.dataIndex];
-                                const percent = ((value / target) * 100).toFixed(1);
-                                return `${label}: ฿${value.toFixed(2)}M (${percent}%)`;
-                            }
-                        }
-                    }
-                }
-            },
-            plugins: [{
-                afterDatasetsDraw: (chart) => {
-                    const ctx = chart.ctx;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const data = dataset.data[index];
-                            ctx.fillStyle = '#333';
-                            ctx.font = 'bold 12px Arial';
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'bottom';
-                            ctx.fillText('฿' + data.toFixed(1) + 'M', bar.x, bar.y - 5);
-                        });
-                    });
-                }
-            }]
+            options: commonOptions,
+            plugins: [valuePlugin]
         });
 
         // Market Access Chart
@@ -845,48 +1054,33 @@
         new Chart(maCtx, {
             type: 'bar',
             data: {
-                labels: ['SETNET3', 'Equity API', 'Derivatives API', 'Co-location'],
+                labels: ['Equity API', 'Co-location', 'SETNET3', 'Derivatives API'],
                 datasets: [
                     {
-                        label: 'Target',
-                        data: [31.43, 209.96, 19.20, 96.94],
-                        backgroundColor: 'rgba(200, 200, 200, 0.7)',
-                        borderColor: 'rgba(150, 150, 150, 1)',
+                        label: '🎯 Target',
+                        data: [209.96, 96.94, 31.43, 19.20],
+                        backgroundColor: colors.target.bg,
+                        borderColor: colors.target.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Actual YTD',
-                        data: [25.87, 178.14, 18.86, 96.53],
-                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
-                        borderColor: 'rgba(56, 142, 60, 1)',
+                        label: '💰 Actual YTD',
+                        data: [178.14, 96.53, 25.87, 18.86],
+                        backgroundColor: colors.actual.bg,
+                        borderColor: colors.actual.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Projected Total',
-                        data: [31.19, 213.23, 23.11, 114.95],
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: 'rgba(63, 81, 181, 1)',
+                        label: '📈 Projected',
+                        data: [213.23, 114.95, 31.19, 23.11],
+                        backgroundColor: colors.projected.bg,
+                        borderColor: colors.projected.border,
                         borderWidth: 2
                     }
                 ]
             },
             options: commonOptions,
-            plugins: [{
-                afterDatasetsDraw: (chart) => {
-                    const ctx = chart.ctx;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const data = dataset.data[index];
-                            ctx.fillStyle = '#333';
-                            ctx.font = 'bold 11px Arial';
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'bottom';
-                            ctx.fillText('฿' + data.toFixed(1) + 'M', bar.x, bar.y - 5);
-                        });
-                    });
-                }
-            }]
+            plugins: [valuePlugin]
         });
 
         // Information Service Chart
@@ -894,50 +1088,43 @@
         new Chart(infoCtx, {
             type: 'bar',
             data: {
-                labels: ['Price Feed\n(Real-time)', 'Price Feed\n(Delay)', 'Non Display', 'Display\n(End-User)', 'Index', 'SETSMART', 'Data File', 'Audit Fee', 'Banner'],
+                labels: [
+                    'Price Feed\n(Real-time)', 
+                    'Non Display', 
+                    'Display\n(End-User)', 
+                    'Index', 
+                    'SETSMART', 
+                    'Data File', 
+                    'Price Feed\n(Delay)', 
+                    'Audit Fee', 
+                    'Banner'
+                ],
                 datasets: [
                     {
-                        label: 'Target',
-                        data: [154.00, 9.60, 86.35, 78.00, 34.35, 21.00, 18.00, 15.00, 3.50],
-                        backgroundColor: 'rgba(200, 200, 200, 0.7)',
-                        borderColor: 'rgba(150, 150, 150, 1)',
+                        label: '🎯 Target',
+                        data: [154.00, 86.35, 78.00, 34.35, 21.00, 18.00, 9.60, 15.00, 3.50],
+                        backgroundColor: colors.target.bg,
+                        borderColor: colors.target.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Actual YTD',
-                        data: [136.07, 8.31, 75.58, 69.34, 34.76, 16.68, 15.13, 3.87, 0.81],
-                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
-                        borderColor: 'rgba(56, 142, 60, 1)',
+                        label: '💰 Actual YTD',
+                        data: [136.07, 75.58, 69.34, 34.76, 16.68, 15.13, 8.31, 3.87, 0.81],
+                        backgroundColor: colors.actual.bg,
+                        borderColor: colors.actual.border,
                         borderWidth: 2
                     },
                     {
-                        label: 'Projected Total',
-                        data: [162.37, 9.89, 90.71, 83.20, 42.02, 19.94, 17.74, 4.12, 1.19],
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: 'rgba(63, 81, 181, 1)',
+                        label: '📈 Projected',
+                        data: [162.37, 90.71, 83.20, 42.02, 19.94, 17.74, 9.89, 4.12, 1.19],
+                        backgroundColor: colors.projected.bg,
+                        borderColor: colors.projected.border,
                         borderWidth: 2
                     }
                 ]
             },
             options: commonOptions,
-            plugins: [{
-                afterDatasetsDraw: (chart) => {
-                    const ctx = chart.ctx;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const data = dataset.data[index];
-                            if (data > 0) {
-                                ctx.fillStyle = '#333';
-                                ctx.font = 'bold 10px Arial';
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'bottom';
-                                ctx.fillText('฿' + data.toFixed(1) + 'M', bar.x, bar.y - 5);
-                            }
-                        });
-                    });
-                }
-            }]
+            plugins: [valuePlugin]
         });
     </script>
 </body>
