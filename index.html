@@ -14,7 +14,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
     padding: 20px;
     min-height: 100vh;
 }
@@ -46,6 +46,17 @@ body {
 .header-subtitle {
     color: #666;
     font-size: 1em;
+}
+
+.data-period-badge {
+    background: linear-gradient(135deg, #43A047, #2E7D32);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 8px;
+    display: inline-block;
 }
 
 .last-updated {
@@ -490,6 +501,7 @@ body {
                     <h1>📊 Revenue Dashboard 2025</h1>
                 </div>
                 <p class="header-subtitle">Service Performance Tracking & Analytics</p>
+                <div class="data-period-badge">📅 Actual Data: January - October 2025</div>
             </div>
             <div class="last-updated">Last Updated: Nov 17, 2025</div>
         </div>
@@ -497,11 +509,11 @@ body {
         <div class="legend-container">
             <div class="legend-item">
                 <div class="legend-box legend-target"></div>
-                <span>🎯 Target</span>
+                <span>🎯 Target (Annual)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-box legend-actual"></div>
-                <span>💰 Actual YTD</span>
+                <span>💰 Actual (Jan-Oct 2025)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-box legend-projected"></div>
@@ -961,7 +973,7 @@ body {
                 </div>
                 <div class="overall-metric actual-metric">
                     <div class="overall-metric-icon">💰</div>
-                    <div class="overall-metric-label">Actual YTD</div>
+                    <div class="overall-metric-label">Actual (Jan-Oct 2025)</div>
                     <div class="overall-metric-value">฿680.01M<span class="overall-metric-percent" style="color: #2E7D32;">87.5%</span></div>
                 </div>
                 <div class="overall-metric expected-metric">
@@ -1109,7 +1121,7 @@ const dashboardData = {
 const colors = {
     target: { bg: 'rgba(144, 164, 174, 0.7)', border: 'rgba(96, 125, 139, 1)' },
     actual: { bg: 'rgba(102, 187, 106, 0.8)', border: 'rgba(67, 160, 71, 1)' },
-    projected: { bg: 'rgba(66, 165, 245, 0.8)', border: 'rgba(30, 136, 229, 1)' }
+    projected: { bg: 'rgba(66, 165, 245, 0.15)', border: 'rgba(30, 136, 229, 1)', borderWidth: 3 }
 };
 
 const commonOptions = {
@@ -1148,16 +1160,19 @@ const valuePlugin = {
         const ctx = chart.ctx;
         chart.data.datasets.forEach((dataset, i) => {
             const meta = chart.getDatasetMeta(i);
-            meta.data.forEach((bar, index) => {
-                const dataValue = dataset.data[index];
-                if (dataValue > 0) {
-                    ctx.fillStyle = '#1a1a1a';
-                    ctx.font = 'bold 11px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'bottom';
-                    ctx.fillText('฿' + dataValue.toFixed(1) + 'M', bar.x, bar.y - 5);
-                }
-            });
+            // ตรวจสอบว่า dataset ถูกซ่อนหรือไม่
+            if (!meta.hidden) {
+                meta.data.forEach((bar, index) => {
+                    const dataValue = dataset.data[index];
+                    if (dataValue > 0) {
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.font = 'bold 11px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText('฿' + dataValue.toFixed(1) + 'M', bar.x, bar.y - 5);
+                    }
+                });
+            }
         });
     }
 };
@@ -1169,9 +1184,9 @@ new Chart(deptCtx, {
     data: {
         labels: ['Overall', 'Market Access', 'Information Service'],
         datasets: [
-            { label: '🎯 Target', data: [dashboardData.overall.target, dashboardData.ma.target, dashboardData.info.target], backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
-            { label: '💰 Actual YTD', data: [dashboardData.overall.actual, dashboardData.ma.actual, dashboardData.info.actual], backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
-            { label: '📈 Projected', data: [dashboardData.overall.projected, dashboardData.ma.projected, dashboardData.info.projected], backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: 2 }
+            { label: '🎯 Target (Annual)', data: [dashboardData.overall.target, dashboardData.ma.target, dashboardData.info.target], backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
+            { label: '💰 Actual (Jan-Oct 2025)', data: [dashboardData.overall.actual, dashboardData.ma.actual, dashboardData.info.actual], backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
+            { label: '📈 Projected Year-End', data: [dashboardData.overall.projected, dashboardData.ma.projected, dashboardData.info.projected], backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: colors.projected.borderWidth }
         ]
     },
     options: commonOptions,
@@ -1185,9 +1200,9 @@ new Chart(maCtx, {
     data: {
         labels: dashboardData.ma_services.map(s => s.name),
         datasets: [
-            { label: '🎯 Target', data: dashboardData.ma_services.map(s => s.target), backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
-            { label: '💰 Actual YTD', data: dashboardData.ma_services.map(s => s.actual), backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
-            { label: '📈 Projected', data: dashboardData.ma_services.map(s => s.projected), backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: 2 }
+            { label: '🎯 Target (Annual)', data: dashboardData.ma_services.map(s => s.target), backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
+            { label: '💰 Actual (Jan-Oct 2025)', data: dashboardData.ma_services.map(s => s.actual), backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
+            { label: '📈 Projected Year-End', data: dashboardData.ma_services.map(s => s.projected), backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: colors.projected.borderWidth }
         ]
     },
     options: commonOptions,
@@ -1207,9 +1222,9 @@ new Chart(infoCtx, {
     data: {
         labels: infoLabels,
         datasets: [
-            { label: '🎯 Target', data: dashboardData.info_services.map(s => s.target), backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
-            { label: '💰 Actual YTD', data: dashboardData.info_services.map(s => s.actual), backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
-            { label: '📈 Projected', data: dashboardData.info_services.map(s => s.projected), backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: 2 }
+            { label: '🎯 Target (Annual)', data: dashboardData.info_services.map(s => s.target), backgroundColor: colors.target.bg, borderColor: colors.target.border, borderWidth: 2 },
+            { label: '💰 Actual (Jan-Oct 2025)', data: dashboardData.info_services.map(s => s.actual), backgroundColor: colors.actual.bg, borderColor: colors.actual.border, borderWidth: 2 },
+            { label: '📈 Projected Year-End', data: dashboardData.info_services.map(s => s.projected), backgroundColor: colors.projected.bg, borderColor: colors.projected.border, borderWidth: colors.projected.borderWidth }
         ]
     },
     options: commonOptions,
